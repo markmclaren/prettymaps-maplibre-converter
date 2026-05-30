@@ -28,3 +28,7 @@ Validation status: all built-in prettymaps presets converted successfully, all g
 ## Lè Shine-inspired addition
 
 The file `outputs/special/le-shine.json` provides a standalone blue-globe style inspired by Mapbox’s public Lè Shine article. The GitHub Pages viewer includes it in the style selector, and the accompanying notes are stored in `le_shine_research_notes.md` and `le_shine_design.md`.
+
+## Ukiyo-e special style
+
+The file `outputs/special/ukiyoe.json` provides a standalone Japanese woodblock-print inspired style. It is backed by `assets/ukiyoe-sprite.png`, `assets/ukiyoe-sprite.json`, and their `@2x` variants, and it is available in both GitHub Pages viewers as the `ukiyoe` style option. The design note is stored in `ukiyoe_design.md`.

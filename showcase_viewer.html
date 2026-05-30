@@ -192,10 +192,11 @@
       'abraca-redencao': 'outputs/all_presets/abraca-redencao.json',
       'heerhugowaard': 'outputs/all_presets/heerhugowaard.json',
       'plotter': 'outputs/all_presets/plotter.json',
-      'le-shine': 'outputs/special/le-shine.json'
+      'le-shine': 'outputs/special/le-shine.json',
+      'ukiyoe': 'outputs/special/ukiyoe.json'
     };
 
-    const specialStyles = new Set(['le-shine']);
+    const specialStyles = new Set(['le-shine', 'ukiyoe']);
 
     const places = [
       {
@@ -343,16 +344,28 @@
         note: 'A coastal keypoints example from the notebook; rendered here as an OpenFreeMap vector map.'
       },
       {
-        id: 'le-shine-globe',
+        id: 'le-shine-paris',
         name: 'Lè Shine blue-globe style',
-        location: 'Barcelona, Spain',
+        location: 'Paris, France',
         source: "Mapbox Lè Shine article-inspired special style",
-        center: [2.17557, 41.39491],
-        zoom: 13.2,
+        center: [2.3522, 48.8566],
+        zoom: 12.8,
         bearing: -20,
         pitch: 0,
         style: 'le-shine',
-        note: 'A standalone blue, globe-inspired MapLibre style with subtle dotted polygon texture.'
+        note: 'A standalone blue, globe-inspired MapLibre style with subtle dotted polygon texture; shown over Paris as the home of Lè Shine.'
+      },
+      {
+        id: 'ukiyoe-museum-matsumoto',
+        name: 'Ukiyo-e woodblock style',
+        location: 'Japan Ukiyo-e Museum, Matsumoto, Japan',
+        source: 'Japanese woodblock-print inspired special style',
+        center: [137.9351, 36.2303],
+        zoom: 14.2,
+        bearing: -18,
+        pitch: 0,
+        style: 'ukiyoe',
+        note: 'A standalone washi-paper, Prussian-blue, indigo, and vermilion MapLibre style with wave and hatch sprite textures; shown at the Japan Ukiyo-e Museum.'
       }
     ];
 
@@ -453,9 +466,14 @@
 
     function syncUI() {
       const place = places[currentIndex];
+      const isSpecialStyle = specialStyles.has(currentStyle);
       placeSelect.value = String(currentIndex);
       styleSelect.value = currentStyle;
-      textureSelect.value = currentTexture;
+      textureSelect.value = isSpecialStyle ? 'flat' : currentTexture;
+      textureSelect.disabled = isSpecialStyle;
+      textureSelect.title = isSpecialStyle
+        ? 'Texture switching is disabled for special handcrafted styles; their texture treatment is built into the style.'
+        : 'Switch generated preset styles between flat colors and halftone overlays.';
       document.querySelectorAll('.card').forEach((card) => {
         card.classList.toggle('active', Number(card.dataset.index) === currentIndex);
       });
@@ -474,7 +492,7 @@
     async function setTexture(textureKey) {
       if (!['flat', 'halftone'].includes(textureKey) || textureKey === currentTexture) return;
       currentTexture = textureKey;
-      await applyStyle(currentStyle);
+      if (!specialStyles.has(currentStyle)) await applyStyle(currentStyle);
       syncUI();
     }
 

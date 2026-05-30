@@ -133,3 +133,7 @@ The converter now supports an optional `--texture-mode halftone` flag that adds 
 ## Lè Shine-inspired style
 
 This repository includes `outputs/special/le-shine.json`, a standalone OpenFreeMap/MapLibre adaptation inspired by Mapbox’s public **Rise and Lè Shine** design article. It uses a monochromatic blue palette and the existing halftone sprite assets to approximate the source style’s globe-like dot texture while remaining fully static and GitHub Pages compatible. The showcase viewer exposes it as the `le-shine` style option.
+
+### Ukiyo-e woodblock special style
+
+This repository also includes `outputs/special/ukiyoe.json`, a standalone OpenFreeMap/MapLibre style inspired by Japanese Ukiyo-e landscape prints. It uses a warm washi-paper base, Prussian-blue water, indigo linework, muted green landcover, vermilion road accents, and a dedicated `assets/ukiyoe-sprite` texture atlas for wave, hatch, paper-grain, and building-grain fills. The GitHub Pages viewer exposes it as the `ukiyoe` style option.
