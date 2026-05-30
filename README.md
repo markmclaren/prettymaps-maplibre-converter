@@ -2,9 +2,9 @@
 
 **Author:** Manus AI
 
-This package contains a Python command-line converter that translates the visual intent of [`prettymaps`](https://github.com/marceloprates/prettymaps) preset JSON files into standalone MapLibre Style Specification v8 JSON files that use OpenFreeMap vector tiles. Prettymaps presets are designed for static Matplotlib rendering over raw OSM-derived geometries, whereas OpenFreeMap styles are MapLibre styles over OpenMapTiles vector tiles; consequently, the converter performs a **visual-semantic approximation** rather than a lossless data-schema conversion.[1] [2] [3]
+This package contains a Python command-line converter that translates the visual intent of [`prettymaps`](https://github.com/marceloprates/prettymaps) preset JSON files into standalone MapLibre Style Specification v8 JSON files that use OpenFreeMap vector tiles. Prettymaps presets are designed for static Matplotlib rendering over raw OSM-derived geometries, whereas OpenFreeMap styles are MapLibre styles over OpenMapTiles vector tiles; consequently, the converter performs a **visual-semantic approximation** rather than a lossless data-schema conversion. See [prettymaps](https://github.com/marceloprates/prettymaps), [OpenFreeMap quick start](https://openfreemap.org/quick_start/), and the [MapLibre style specification](https://maplibre.org/maplibre-style-spec/).
 
-> The practical outcome is a usable MapLibre style JSON that can be loaded with MapLibre GL JS and pointed at `https://tiles.openfreemap.org/planet`, using OpenFreeMap sprites and glyphs by default.[2] [3]
+> The practical outcome is a usable MapLibre style JSON that can be loaded with MapLibre GL JS and pointed at `https://tiles.openfreemap.org/planet`, using OpenFreeMap sprites and glyphs by default. See [OpenFreeMap quick start](https://openfreemap.org/quick_start/) and the [MapLibre style specification](https://maplibre.org/maplibre-style-spec/).
 
 ## Contents
 
@@ -63,7 +63,7 @@ const map = new maplibregl.Map({
 
 ## Conversion model
 
-The converter maps the most common prettymaps layers to OpenMapTiles source layers. This is necessarily approximate because prettymaps can query arbitrary raw OSM tags, while OpenFreeMap exposes the already transformed OpenMapTiles schema.[1] [2]
+The converter maps the most common prettymaps layers to OpenMapTiles source layers. This is necessarily approximate because prettymaps can query arbitrary raw OSM tags, while OpenFreeMap exposes the already transformed OpenMapTiles schema. See [prettymaps](https://github.com/marceloprates/prettymaps) and [OpenFreeMap quick start](https://openfreemap.org/quick_start/).
 
 | prettymaps concept | MapLibre/OpenMapTiles output | Notes |
 |---|---|---|
@@ -95,7 +95,7 @@ The converter intentionally handles only those Matplotlib style properties that 
 
 ## Validation results
 
-The converter was tested against all ten built-in prettymaps presets found in the cloned repository. Each output passed both the local structural smoke test and the official MapLibre style-spec validator from `@maplibre/maplibre-gl-style-spec`.[3]
+The converter was tested against all ten built-in prettymaps presets found in the cloned repository. Each output passed both the local structural smoke test and the official [MapLibre style spec validator](https://maplibre.org/maplibre-style-spec/).
 
 | Validation artifact | Result |
 |---|---|
@@ -111,6 +111,6 @@ If you want a closer visual match, the best next step is to load a converted sty
 
 ## References
 
-[1]: https://github.com/marceloprates/prettymaps "prettymaps GitHub repository"
-[2]: https://openfreemap.org/quick_start/ "OpenFreeMap quick start"
-[3]: https://maplibre.org/maplibre-style-spec/ "MapLibre Style Specification"
+- [`prettymaps`](https://github.com/marceloprates/prettymaps) — prettymaps GitHub repository
+- [OpenFreeMap quick start](https://openfreemap.org/quick_start/) — OpenFreeMap quick start
+- [MapLibre style specification](https://maplibre.org/maplibre-style-spec/) — MapLibre Style Specification
