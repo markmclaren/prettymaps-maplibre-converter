@@ -14,6 +14,9 @@ This package contains a Python command-line converter that translates the visual
 | `conversion_design.md` | Detailed design notes and mapping rationale. |
 | `research_notes.md` | Source-model research notes for prettymaps and OpenFreeMap. |
 | `analysis_summary.md` | Inventory of built-in prettymaps preset layers and OpenFreeMap source-layer usage. |
+| `index.html` | GitHub Pages showcase viewer for prettymaps example places. |
+| `showcase_viewer.html` | Same showcase viewer retained as a named standalone page. |
+| `showcase_extraction.md` | Extracted prettymaps example locations and preset associations used by the viewer. |
 | `test_converter.py` | Smoke-test script that converts all built-in prettymaps presets and checks JSON structure. |
 | `validate_maplibre_styles.mjs` | Formal MapLibre style-spec validation script. |
 | `outputs/all_presets/` | Generated MapLibre styles for every built-in prettymaps preset. |
@@ -60,6 +63,12 @@ const map = new maplibregl.Map({
   zoom: 13
 });
 ```
+
+## GitHub Pages showcase
+
+The repository root `index.html` is an interactive MapLibre viewer for the places used in the prettymaps examples notebook. It includes **Stad van de Zon, Heerhugowaard**, **Praça Ferreira do Amaral in Macau**, **Barcelona**, **Barra da Tijuca**, several **Porto Alegre** neighbourhoods, **Honolulu**, and **Garopaba**. Each place is paired with the closest converted prettymaps preset style, and the page also allows manual switching across all generated styles.
+
+Because this repository already contains the converted style JSON files under `outputs/all_presets/`, GitHub Pages can serve the page directly from `index.html` without a build step.
 
 ## Conversion model
 
