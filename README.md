@@ -63,7 +63,7 @@ const map = new maplibregl.Map({
 
 ## Showcase viewer
 
-`index.html` is an interactive MapLibre viewer for places used in the prettymaps examples notebook — Heerhugowaard, Macau, Barcelona, Barra da Tijuca, several Porto Alegre neighbourhoods, Honolulu, and Garopaba. Each place loads with the closest converted preset. The **Style** dropdown lets you switch between all generated styles, and the **Texture** dropdown toggles between flat color and halftone overlays (halftone is on by default).
+`index.html` is an interactive MapLibre viewer with 18 places across 11 countries: **Stad van de Zon, Heerhugowaard** (Netherlands), **Praça Ferreira do Amaral, Macau**, **Eixample / Sagrada Família, Barcelona**, **Barra da Tijuca, Rio de Janeiro**, four **Porto Alegre** neighbourhoods (Bom Fim, Centro Histórico, Cidade Baixa, Farroupilha), **Honolulu**, **Garopaba**, **Haveforeningen Harekær, Copenhagen**, **Palmanova** (Italy), **Bourtange Fortress Museum** (Netherlands), **Palm Jebel Ali, Dubai**, **Paris** (Lè Shine style), and **Japan Ukiyo-e Museum, Matsumoto** (Ukiyo-e style). Each place loads with its closest converted preset. The **Style** dropdown lets you switch between all generated styles, and the **Texture** dropdown toggles between flat color and halftone overlays (halftone is on by default).
 
 Since the converted style JSON files live under `outputs/`, GitHub Pages serves the page directly with no build step.
 
