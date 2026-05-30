@@ -128,3 +128,8 @@ If you want a closer visual match, the best next step is to load a converted sty
 ## Halftone texture mode
 
 The converter now supports an optional `--texture-mode halftone` flag that adds semi-transparent `fill-pattern` overlays to selected polygon layers. The repository includes a GitHub Pages-compatible sprite at `assets/halftone-sprite.{json,png}` and pre-generated textured styles in `outputs/all_presets_halftone/`. In the showcase viewer, use the **Texture** selector to switch between the original flat-color conversion and the halftone overlay variant.
+
+
+## Lè Shine-inspired style
+
+This repository includes `outputs/special/le-shine.json`, a standalone OpenFreeMap/MapLibre adaptation inspired by Mapbox’s public **Rise and Lè Shine** design article. It uses a monochromatic blue palette and the existing halftone sprite assets to approximate the source style’s globe-like dot texture while remaining fully static and GitHub Pages compatible. The showcase viewer exposes it as the `le-shine` style option.

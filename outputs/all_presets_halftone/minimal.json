@@ -221,7 +221,7 @@
         false
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-surface-hatch",
+        "fill-pattern": "pm-surface-hatch",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },

@@ -1,19 +1,54 @@
 {
   "version": 8,
-  "name": "prettymaps-plotter-openfreemap",
+  "name": "Lè Shine inspired — OpenFreeMap",
   "metadata": {
     "generator": "prettymaps_to_maplibre.py",
-    "source_preset": "/home/ubuntu/prettymaps/prettymaps/presets/plotter.json",
+    "source_preset": "/home/ubuntu/prettymaps/prettymaps/presets/default.json",
     "conversion_model": "visual-semantic approximation from prettymaps Matplotlib styles to OpenMapTiles/MapLibre layers",
     "texture_mode": "halftone",
     "halftone_sprite": "../../assets/halftone-sprite",
-    "halftone_overlay_count": 9,
+    "halftone_overlay_count": 11,
     "conversion_warnings": [
       "Layer 'perimeter' is ignored because MapLibre styles do not define map bounds.",
-      "Halftone texture mode added 9 semi-transparent pattern overlay layer(s)."
+      "Layer 'green' uses prettymaps key 'hatch', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'green' uses prettymaps key 'hatch_c', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'beach' uses prettymaps key 'hatch', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'beach' uses prettymaps key 'hatch_c', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'building' uses a palette; MapLibre output uses the first palette color for deterministic styling.",
+      "Layer 'sea' uses prettymaps key 'hatch', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'sea' uses prettymaps key 'hatch_c', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'water' uses prettymaps key 'hatch', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'water' uses prettymaps key 'hatch_c', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'waterway' uses prettymaps key 'hatch', which is only partially supported or unsupported in MapLibre.",
+      "Layer 'waterway' uses prettymaps key 'hatch_c', which is only partially supported or unsupported in MapLibre.",
+      "Halftone texture mode added 11 semi-transparent pattern overlay layer(s)."
     ],
-    "unsupported_prettymaps_style_keys": {},
-    "layer_count": 39
+    "unsupported_prettymaps_style_keys": {
+      "green": [
+        "hatch",
+        "hatch_c"
+      ],
+      "beach": [
+        "hatch",
+        "hatch_c"
+      ],
+      "sea": [
+        "hatch",
+        "hatch_c"
+      ],
+      "water": [
+        "hatch",
+        "hatch_c"
+      ],
+      "waterway": [
+        "hatch",
+        "hatch_c"
+      ]
+    },
+    "layer_count": 56,
+    "prettymaps:style": "le-shine",
+    "prettymaps:description": "Blue globe-inspired Lè Shine adaptation for OpenFreeMap/MapLibre, based on the public Mapbox design article rather than the proprietary Mapbox style.",
+    "mapbox:autocomposite": false
   },
   "sources": {
     "openmaptiles": {
@@ -21,232 +56,14 @@
       "url": "https://tiles.openfreemap.org/planet"
     }
   },
-  "sprite": [
-    {
-      "id": "default",
-      "url": "https://tiles.openfreemap.org/sprites/ofm_f384/ofm"
-    },
-    {
-      "id": "halftone",
-      "url": "../../assets/halftone-sprite"
-    }
-  ],
+  "sprite": "../../assets/halftone-sprite",
   "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#f2f3f0"
-      }
-    },
-    {
-      "id": "pm-beach",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "filter": [
-        "all",
-        [
-          "match",
-          [
-            "geometry-type"
-          ],
-          [
-            "Polygon",
-            "MultiPolygon"
-          ],
-          true,
-          false
-        ],
-        [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          [
-            "sand"
-          ],
-          true,
-          false
-        ]
-      ],
-      "paint": {
-        "fill-color": "#FCE19C",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
-      }
-    },
-    {
-      "id": "pm-beach-halftone",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "filter": [
-        "all",
-        [
-          "match",
-          [
-            "geometry-type"
-          ],
-          [
-            "Polygon",
-            "MultiPolygon"
-          ],
-          true,
-          false
-        ],
-        [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          [
-            "sand"
-          ],
-          true,
-          false
-        ]
-      ],
-      "paint": {
-        "fill-pattern": "pm-beach-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
-      },
-      "metadata": {
-        "prettymaps:halftone_overlay": true
-      }
-    },
-    {
-      "id": "pm-building",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "building",
-      "filter": [
-        "match",
-        [
-          "geometry-type"
-        ],
-        [
-          "Polygon",
-          "MultiPolygon"
-        ],
-        true,
-        false
-      ],
-      "paint": {
-        "fill-color": "#d8d0c8",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
-      },
-      "minzoom": 12
-    },
-    {
-      "id": "pm-building-halftone",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "building",
-      "filter": [
-        "match",
-        [
-          "geometry-type"
-        ],
-        [
-          "Polygon",
-          "MultiPolygon"
-        ],
-        true,
-        false
-      ],
-      "paint": {
-        "fill-pattern": "pm-surface-hatch",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
-      },
-      "minzoom": 12,
-      "metadata": {
-        "prettymaps:halftone_overlay": true
-      }
-    },
-    {
-      "id": "pm-forest",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "filter": [
-        "all",
-        [
-          "match",
-          [
-            "geometry-type"
-          ],
-          [
-            "Polygon",
-            "MultiPolygon"
-          ],
-          true,
-          false
-        ],
-        [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          [
-            "wood"
-          ],
-          true,
-          false
-        ]
-      ],
-      "paint": {
-        "fill-color": "#64B96A",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
-      }
-    },
-    {
-      "id": "pm-forest-halftone",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "filter": [
-        "all",
-        [
-          "match",
-          [
-            "geometry-type"
-          ],
-          [
-            "Polygon",
-            "MultiPolygon"
-          ],
-          true,
-          false
-        ],
-        [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          [
-            "wood"
-          ],
-          true,
-          false
-        ]
-      ],
-      "paint": {
-        "fill-pattern": "pm-forest-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
-      },
-      "metadata": {
-        "prettymaps:halftone_overlay": true
+        "background-color": "#d7edf2"
       }
     },
     {
@@ -267,9 +84,10 @@
         false
       ],
       "paint": {
-        "fill-color": "#8BB174",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
       }
     },
     {
@@ -290,12 +108,40 @@
         false
       ],
       "paint": {
-        "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-green-park-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "park",
+      "filter": [
+        "match",
+        [
+          "geometry-type"
+        ],
+        [
+          "Polygon",
+          "MultiPolygon"
+        ],
+        true,
+        false
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
       }
     },
     {
@@ -331,9 +177,10 @@
         ]
       ],
       "paint": {
-        "fill-color": "#8BB174",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
       }
     },
     {
@@ -369,12 +216,55 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-green-grass-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "grass"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
       }
     },
     {
@@ -410,9 +300,10 @@
         ]
       ],
       "paint": {
-        "fill-color": "#8BB174",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
       }
     },
     {
@@ -448,12 +339,301 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "pm-forest-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-green-wood-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "wood"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
+      }
+    },
+    {
+      "id": "pm-forest",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "wood"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
+      }
+    },
+    {
+      "id": "pm-forest-halftone",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "wood"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
+      },
+      "metadata": {
+        "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-forest-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "wood"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
+      }
+    },
+    {
+      "id": "pm-beach",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "sand"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
+      }
+    },
+    {
+      "id": "pm-beach-halftone",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "sand"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
+      },
+      "metadata": {
+        "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-beach-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "sand"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
       }
     },
     {
@@ -485,9 +665,10 @@
         ]
       ],
       "paint": {
-        "fill-color": "#F2F4CB",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
       }
     },
     {
@@ -519,12 +700,51 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-parking-pier-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "==",
+          [
+            "get",
+            "class"
+          ],
+          "pier"
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
       }
     },
     {
@@ -560,9 +780,10 @@
         ]
       ],
       "paint": {
-        "fill-color": "#F2F4CB",
-        "fill-opacity": 1.0,
-        "fill-antialias": true
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
       }
     },
     {
@@ -598,12 +819,55 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-parking-landuse-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "parking"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
       }
     },
     {
@@ -658,7 +922,7 @@
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#ffffff",
+        "line-color": "#eef8fb",
         "line-width": [
           "interpolate",
           [
@@ -756,7 +1020,322 @@
             4.0
           ]
         ],
+        "line-opacity": 0.88
+      }
+    },
+    {
+      "id": "pm-building",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "filter": [
+        "match",
+        [
+          "geometry-type"
+        ],
+        [
+          "Polygon",
+          "MultiPolygon"
+        ],
+        true,
+        false
+      ],
+      "paint": {
+        "fill-color": "#98bfce",
+        "fill-opacity": 0.82,
+        "fill-antialias": true,
+        "fill-outline-color": "#6d9cad"
+      },
+      "minzoom": 12
+    },
+    {
+      "id": "pm-building-halftone",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "filter": [
+        "match",
+        [
+          "geometry-type"
+        ],
+        [
+          "Polygon",
+          "MultiPolygon"
+        ],
+        true,
+        false
+      ],
+      "paint": {
+        "fill-pattern": "pm-surface-hatch",
+        "fill-opacity": 0.82,
+        "fill-antialias": true,
+        "fill-color": "#98bfce",
+        "fill-outline-color": "#6d9cad"
+      },
+      "minzoom": 12,
+      "metadata": {
+        "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-building-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "filter": [
+        "match",
+        [
+          "geometry-type"
+        ],
+        [
+          "Polygon",
+          "MultiPolygon"
+        ],
+        true,
+        false
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 0.5,
         "line-opacity": 1.0
+      },
+      "minzoom": 12
+    },
+    {
+      "id": "pm-rock",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "rock"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-color": "#9ec8d2",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-pattern": "pm-water-dot"
+      }
+    },
+    {
+      "id": "pm-rock-halftone",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "rock"
+          ],
+          true,
+          false
+        ]
+      ],
+      "paint": {
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.78,
+        "fill-antialias": true,
+        "fill-color": "#9ec8d2"
+      },
+      "metadata": {
+        "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-rock-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "rock"
+          ],
+          true,
+          false
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#7daabb",
+        "line-width": 1.0,
+        "line-opacity": 1.0
+      }
+    },
+    {
+      "id": "pm-sea",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "paint": {
+        "fill-color": "#163f66",
+        "fill-opacity": 1.0,
+        "fill-antialias": true
+      }
+    },
+    {
+      "id": "pm-sea-halftone",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "paint": {
+        "fill-pattern": "pm-water-dot",
+        "fill-opacity": 0.72,
+        "fill-antialias": true,
+        "fill-color": "#163f66"
+      },
+      "metadata": {
+        "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-sea-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#0e2f52",
+        "line-width": 1.0,
+        "line-opacity": 0.65
       }
     },
     {
@@ -788,7 +1367,7 @@
         ]
       ],
       "paint": {
-        "fill-color": "#a8e1e6",
+        "fill-color": "#163f66",
         "fill-opacity": 1.0,
         "fill-antialias": true
       }
@@ -824,10 +1403,271 @@
       "paint": {
         "fill-pattern": "pm-water-dot",
         "fill-opacity": 0.72,
-        "fill-antialias": true
+        "fill-antialias": true,
+        "fill-color": "#163f66"
       },
       "metadata": {
         "prettymaps:halftone_overlay": true
+      }
+    },
+    {
+      "id": "pm-water-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "Polygon",
+            "MultiPolygon"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#0e2f52",
+        "line-width": 1.0,
+        "line-opacity": 0.65
+      }
+    },
+    {
+      "id": "pm-waterway-casing",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "waterway",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "LineString",
+            "MultiLineString"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "river",
+            "stream"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#0e2f52",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.35
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              22.0,
+              "stream",
+              12.0,
+              1.0
+            ],
+            0.24
+          ],
+          14,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              22.0,
+              "stream",
+              12.0,
+              1.0
+            ],
+            0.8
+          ],
+          20,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              22.0,
+              "stream",
+              12.0,
+              1.0
+            ],
+            3.2
+          ]
+        ],
+        "line-opacity": 0.65
+      }
+    },
+    {
+      "id": "pm-waterway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "waterway",
+      "filter": [
+        "all",
+        [
+          "match",
+          [
+            "geometry-type"
+          ],
+          [
+            "LineString",
+            "MultiLineString"
+          ],
+          true,
+          false
+        ],
+        [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "river",
+            "stream"
+          ],
+          true,
+          false
+        ],
+        [
+          "!=",
+          [
+            "get",
+            "brunnel"
+          ],
+          "tunnel"
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#0e2f52",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.35
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              20.0,
+              "stream",
+              10.0,
+              1.0
+            ],
+            0.24
+          ],
+          14,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              20.0,
+              "stream",
+              10.0,
+              1.0
+            ],
+            0.8
+          ],
+          20,
+          [
+            "*",
+            [
+              "match",
+              [
+                "get",
+                "class"
+              ],
+              "river",
+              20.0,
+              "stream",
+              10.0,
+              1.0
+            ],
+            3.2
+          ]
+        ],
+        "line-opacity": 0.65
       }
     },
     {
@@ -889,9 +1729,10 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "hsl(0,0%,66%)",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 0.3
       }
     },
     {
@@ -962,9 +1803,10 @@
         ]
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 0.3
       }
     },
     {
@@ -1025,9 +1867,10 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 0.3
       }
     },
     {
@@ -1095,9 +1938,10 @@
         ]
       },
       "paint": {
-        "text-color": "hsl(30,0%,62%)",
-        "text-halo-color": "#f8f4f0",
-        "text-halo-width": 0.5
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 0.5,
+        "text-halo-blur": 0.3
       }
     },
     {
@@ -1186,9 +2030,10 @@
         ]
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#12314e",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1
+        "text-halo-width": 1,
+        "text-halo-color": "#dff4f8"
       }
     },
     {
@@ -1263,9 +2108,10 @@
         ]
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#12314e",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1
+        "text-halo-width": 1,
+        "text-halo-color": "#dff4f8"
       }
     },
     {
@@ -1344,6 +2190,14 @@
         ],
         "text-rotation-alignment": "viewport",
         "text-size": 10
+      },
+      "paint": {
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.1,
+        "text-halo-blur": 0.3,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1426,6 +2280,14 @@
         ],
         "text-rotation-alignment": "viewport",
         "text-size": 10
+      },
+      "paint": {
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.1,
+        "text-halo-blur": 0.3,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1507,6 +2369,14 @@
         ],
         "text-rotation-alignment": "viewport",
         "text-size": 10
+      },
+      "paint": {
+        "text-color": "#12314e",
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1.1,
+        "text-halo-blur": 0.3,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1569,10 +2439,12 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#12314e",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1650,9 +2522,9 @@
         "text-transform": "uppercase"
       },
       "paint": {
-        "text-color": "#333",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
+        "text-halo-color": "#dff4f8",
         "text-halo-width": 1
       }
     },
@@ -1734,10 +2606,12 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
-        "text-halo-width": 1
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1818,10 +2692,12 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
-        "text-halo-width": 1
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -1891,9 +2767,9 @@
         "text-transform": "uppercase"
       },
       "paint": {
-        "text-color": "#333",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
+        "text-halo-color": "#dff4f8",
         "text-halo-width": 1
       }
     },
@@ -1992,10 +2868,12 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
-        "text-halo-width": 1
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -2093,10 +2971,12 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
-        "text-halo-width": 1
+        "text-halo-color": "#dff4f8",
+        "text-halo-width": 1,
+        "icon-color": "#245d80",
+        "icon-opacity": 0.82
       }
     },
     {
@@ -2175,9 +3055,9 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
+        "text-halo-color": "#dff4f8",
         "text-halo-width": 1
       }
     },
@@ -2256,9 +3136,9 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
+        "text-halo-color": "#dff4f8",
         "text-halo-width": 1
       }
     },
@@ -2337,9 +3217,9 @@
         ]
       },
       "paint": {
-        "text-color": "#000",
+        "text-color": "#12314e",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
+        "text-halo-color": "#dff4f8",
         "text-halo-width": 1
       }
     }

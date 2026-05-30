@@ -374,19 +374,19 @@ def halftone_pattern_for_layer(layer_id: str) -> str | None:
     if not lid.startswith("pm-") or lid.endswith("-outline") or lid.endswith("-halftone"):
         return None
     if any(token in lid for token in ["water", "sea"]):
-        return "halftone:pm-water-dot"
+        return "pm-water-dot"
     if any(token in lid for token in ["forest", "wood"]):
-        return "halftone:pm-forest-dot"
+        return "pm-forest-dot"
     if any(token in lid for token in ["green", "park", "garden", "grass"]):
-        return "halftone:pm-green-dot"
+        return "pm-green-dot"
     if any(token in lid for token in ["beach", "sand"]):
-        return "halftone:pm-beach-dot"
+        return "pm-beach-dot"
     if "wetland" in lid:
-        return "halftone:pm-wetland-cross"
+        return "pm-wetland-cross"
     if "rock" in lid:
-        return "halftone:pm-rock-speckle"
+        return "pm-rock-speckle"
     if any(token in lid for token in ["parking", "pedestrian", "school", "building"]):
-        return "halftone:pm-surface-hatch"
+        return "pm-surface-hatch"
     return None
 
 

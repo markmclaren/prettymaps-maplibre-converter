@@ -112,7 +112,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-forest-dot",
+        "fill-pattern": "pm-forest-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -203,7 +203,7 @@
         false
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-green-dot",
+        "fill-pattern": "pm-green-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -309,7 +309,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-green-dot",
+        "fill-pattern": "pm-green-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -430,7 +430,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-forest-dot",
+        "fill-pattern": "pm-forest-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -521,7 +521,7 @@
         false
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-green-dot",
+        "fill-pattern": "pm-green-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -627,7 +627,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-green-dot",
+        "fill-pattern": "pm-green-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -748,7 +748,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-forest-dot",
+        "fill-pattern": "pm-forest-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -861,7 +861,7 @@
         ]
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-water-dot",
+        "fill-pattern": "pm-water-dot",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },
@@ -1227,7 +1227,7 @@
         false
       ],
       "paint": {
-        "fill-pattern": "halftone:pm-surface-hatch",
+        "fill-pattern": "pm-surface-hatch",
         "fill-opacity": 0.72,
         "fill-antialias": true
       },

@@ -150,7 +150,7 @@
   <main class="shell" aria-label="prettymaps showcase controls">
     <section class="panel">
       <h1>prettymaps places, rendered with converted OpenFreeMap styles</h1>
-      <p>This viewer visits the example places used in the prettymaps notebook and applies the converted MapLibre styles created from the prettymaps presets.</p>
+      <p>This viewer visits the example places used in the prettymaps notebook and applies the converted MapLibre styles created from the prettymaps presets, plus a Lè Shine-inspired blue-globe style.</p>
       <div class="controls">
         <div>
           <label for="placeSelect">Place</label>
@@ -191,8 +191,11 @@
       'cb-bf-f': 'outputs/all_presets/cb-bf-f.json',
       'abraca-redencao': 'outputs/all_presets/abraca-redencao.json',
       'heerhugowaard': 'outputs/all_presets/heerhugowaard.json',
-      'plotter': 'outputs/all_presets/plotter.json'
+      'plotter': 'outputs/all_presets/plotter.json',
+      'le-shine': 'outputs/special/le-shine.json'
     };
+
+    const specialStyles = new Set(['le-shine']);
 
     const places = [
       {
@@ -338,6 +341,18 @@
         pitch: 0,
         style: 'default',
         note: 'A coastal keypoints example from the notebook; rendered here as an OpenFreeMap vector map.'
+      },
+      {
+        id: 'le-shine-globe',
+        name: 'Lè Shine blue-globe style',
+        location: 'Barcelona, Spain',
+        source: "Mapbox Lè Shine article-inspired special style",
+        center: [2.17557, 41.39491],
+        zoom: 13.2,
+        bearing: -20,
+        pitch: 0,
+        style: 'le-shine',
+        note: 'A standalone blue, globe-inspired MapLibre style with subtle dotted polygon texture.'
       }
     ];
 
@@ -351,6 +366,7 @@
 
     function styleUrl(styleKey) {
       const flatUrl = styles[styleKey];
+      if (specialStyles.has(styleKey)) return flatUrl;
       if (currentTexture === 'halftone') {
         return flatUrl.replace('outputs/all_presets/', 'outputs/all_presets_halftone/');
       }
@@ -359,7 +375,7 @@
 
     async function styleForMapLibre(styleKey) {
       const url = styleUrl(styleKey);
-      if (currentTexture !== 'halftone') return url;
+      if (currentTexture !== 'halftone' && !specialStyles.has(styleKey)) return url;
 
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Unable to load style ${url}: ${response.status}`);
