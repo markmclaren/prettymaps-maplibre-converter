@@ -1,6 +1,6 @@
 # prettymaps to OpenFreeMap MapLibre converter
 
-**Author:** Manus AI
+Experiment with prettymaps to MapLibre styles conversion.
 
 This package contains a Python command-line converter that translates the visual intent of [`prettymaps`](https://github.com/marceloprates/prettymaps) preset JSON files into standalone MapLibre Style Specification v8 JSON files that use OpenFreeMap vector tiles. Prettymaps presets are designed for static Matplotlib rendering over raw OSM-derived geometries, whereas OpenFreeMap styles are MapLibre styles over OpenMapTiles vector tiles; consequently, the converter performs a **visual-semantic approximation** rather than a lossless data-schema conversion. See [prettymaps](https://github.com/marceloprates/prettymaps), [OpenFreeMap quick start](https://openfreemap.org/quick_start/), and the [MapLibre style specification](https://maplibre.org/maplibre-style-spec/).
 
