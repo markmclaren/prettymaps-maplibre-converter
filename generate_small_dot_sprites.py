@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Regenerate halftone sprite sheets with smaller, more numerous dots.
+"""Regenerate halftone sprite sheets — 2 staggered rows of circles, tiling seamlessly.
 
 Produces assets/halftone-sprite.png and assets/halftone-sprite@2x.png
 with corresponding JSON metadata files.
 
-Uses explicit 3×3 pixel squares for dots (fully opaque at the sprite level).
-Transparency is handled by the MapLibre fill-opacity on the overlay layer.
+Layout: exactly 2 staggered rows of dots per tile (classic halftone pattern).
+
+Dot shape:
+  1x tiles (16×16): 2×2 pixel blocks — small filled dots that read as circles
+  2x tiles (32×32): 7×7 circles via PIL ImageDraw.ellipse
+
+All dots positioned so dot extent never touches tile edge — both left/right
+edges are empty (matching), and both top/bottom edges are empty (matching).
+Hatch/cross patterns get a seam fix pass.
 """
 
 from __future__ import annotations
@@ -13,7 +20,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ASSETS = Path("assets")
 TILE_SIZE = 16
@@ -29,81 +36,38 @@ PATTERNS: list[str] = [
     "pm-surface-hatch",
 ]
 
-# Light grey dots that blend smoothly over fill colors
-DOT_COLOR = (160, 160, 160, 255)  # fully opaque grey
+DOT_COLOR = (160, 160, 160, 255)
 LINE_COLOR = (160, 160, 160, 255)
 
 
-def _draw_3x3_dot(tile: Image.Image, cx: int, cy: int) -> None:
-    """Place a 3×3 pixel square at (cx, cy) as center."""
-    for dx in (-1, 0, 1):
-        for dy in (-1, 0, 1):
-            tile.putpixel((cx + dx, cy + dy), DOT_COLOR)
+# ---------------------------------------------------------------------------
+# Seam fix helpers
+# ---------------------------------------------------------------------------
 
 
-def make_1x_tile(name: str) -> Image.Image:
-    """Create a 16×16 pattern tile."""
-    tile = Image.new("RGBA", (TILE_SIZE, TILE_SIZE), (0, 0, 0, 0))
+def _seam_fix_1x(tile: Image.Image) -> None:
+    w, h = tile.size
+    for y in range(h):
+        tile.putpixel((w - 1, y), tile.getpixel((0, y)))
+    for x in range(w):
+        tile.putpixel((x, h - 1), tile.getpixel((x, 0)))
 
-    if name == "pm-water-dot":
-        # 3 rows x 2 dots per row with 4px offset on odd rows
-        for x in (2, 10):
-            _draw_3x3_dot(tile, x, 2)
-        for x in (6, 14):
-            _draw_3x3_dot(tile, x, 7)
-        for x in (2, 10):
-            _draw_3x3_dot(tile, x, 12)
 
-    elif name == "pm-green-dot":
-        # 4 rows staggered
-        for x in (2, 10):
-            _draw_3x3_dot(tile, x, 2)
-        for x in (6, 14):
-            _draw_3x3_dot(tile, x, 5)
-        for x in (2, 10):
-            _draw_3x3_dot(tile, x, 9)
-        for x in (6, 14):
-            _draw_3x3_dot(tile, x, 12)
+def _seam_fix_2x(tile: Image.Image) -> None:
+    w, h = tile.size
+    for y in range(h):
+        tile.putpixel((w - 1, y), tile.getpixel((0, y)))
+    for x in range(w):
+        tile.putpixel((x, h - 1), tile.getpixel((x, 0)))
 
-    elif name == "pm-forest-dot":
-        # 4 rows, tighter spacing
-        for x in (2, 9):
-            _draw_3x3_dot(tile, x, 2)
-        for x in (5, 12):
-            _draw_3x3_dot(tile, x, 6)
-        for x in (2, 9):
-            _draw_3x3_dot(tile, x, 10)
-        for x in (5, 12):
-            _draw_3x3_dot(tile, x, 14)
 
-    elif name == "pm-beach-dot":
-        # 2 rows, sparse
-        for x in (2, 10):
-            _draw_3x3_dot(tile, x, 3)
-        for x in (6, 14):
-            _draw_3x3_dot(tile, x, 10)
-
-    elif name == "pm-wetland-cross":
-        for i in range(-TILE_SIZE, TILE_SIZE * 2, 4):
-            for w in range(1):
-                _draw_line_1x(tile, i, 0, i + TILE_SIZE, TILE_SIZE)
-                _draw_line_1x(tile, i + TILE_SIZE, 0, i, TILE_SIZE)
-
-    elif name == "pm-rock-speckle":
-        for cx, cy in [(3, 3), (11, 3), (6, 7), (14, 7), (3, 11), (10, 13)]:
-            for dx in (-1, 0, 1):
-                for dy in (-1, 0, 1):
-                    tile.putpixel((cx + dx, cy + dy), DOT_COLOR)
-
-    elif name == "pm-surface-hatch":
-        for i in range(-TILE_SIZE, TILE_SIZE * 2, 3):
-            _draw_line_1x(tile, i, 0, i + TILE_SIZE, TILE_SIZE)
-
-    return tile
+# ---------------------------------------------------------------------------
+# Line drawing (for hatch / cross patterns)
+# ---------------------------------------------------------------------------
 
 
 def _draw_line_1x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None:
-    """Draw a single-pixel-width diagonal line using a simple Bresenham-ish approach."""
+    w = TILE_SIZE
     dx = abs(x1 - x0)
     dy = abs(y1 - y0)
     sx = 1 if x0 < x1 else -1
@@ -111,10 +75,9 @@ def _draw_line_1x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None
     err = dx - dy
     x, y = x0, y0
     while True:
-        if 0 <= x < TILE_SIZE and 0 <= y < TILE_SIZE:
-            tile.putpixel((x, y), LINE_COLOR)
-            if x + 1 < TILE_SIZE:
-                tile.putpixel((x + 1, y), LINE_COLOR)  # thicker line
+        wx, wy = x % w, y % w
+        tile.putpixel((wx, wy), LINE_COLOR)
+        tile.putpixel(((wx + 1) % w, wy), LINE_COLOR)
         if x == x1 and y == y1:
             break
         e2 = 2 * err
@@ -126,91 +89,160 @@ def _draw_line_1x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None
             y += sy
 
 
-def make_2x_tile(name: str) -> Image.Image:
-    """Create a 32×32 pattern tile for retina displays. Dots are 6×6 pixel blocks."""
-    tile = Image.new("RGBA", (TILE_SIZE_2X, TILE_SIZE_2X), (0, 0, 0, 0))
-    dot_color = DOT_COLOR
+def _draw_line_2x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None:
+    w = TILE_SIZE_2X
+    dx = abs(x1 - x0)
+    dy = abs(y1 - y0)
+    sx = 1 if x0 < x1 else -1
+    sy = 1 if y0 < y1 else -1
+    err = dx - dy
+    x, y = x0, y0
+    while True:
+        wx, wy = x % w, y % w
+        tile.putpixel((wx, wy), LINE_COLOR)
+        tile.putpixel(((wx + 1) % w, wy), LINE_COLOR)
+        tile.putpixel((wx, (wy + 1) % w), LINE_COLOR)
+        if x == x1 and y == y1:
+            break
+        e2 = 2 * err
+        if e2 > -dy:
+            err -= dy
+            x += sx
+        if e2 < dx:
+            err += dx
+            y += sy
 
-    def _dot(cx: int, cy: int) -> None:
-        for dx in (-2, -1, 0, 1, 2):
-            for dy in (-2, -1, 0, 1, 2):
-                tile.putpixel((cx + dx, cy + dy), dot_color)
+
+# ---------------------------------------------------------------------------
+# Dot drawing / placement
+#
+# 1x: 2×2 block at (x,y) occupies x..x+1, y..y+1.
+#     For seamless tiling: max safe x=13 (blocks 13-14), max safe y=13.
+#     Rows at y=3 (spans 3-4) and y=11 (spans 11-12). Safe.
+#
+# 2x: 7×7 circle at (cx,cy) occupies cx-3..cx+3, cy-3..cy+3.
+#     For seamless tiling: min cx=4 (hits 1), max cx=28 (hits 31)?
+#     Actually cx+3=31 → touches column 31, which is edge = bad.
+#     Max safe cx=27 (25-30), min safe cx=4 (1-7).
+#     Rows at cy=7 (spans 4-10) and cy=23 (spans 20-26). Safe.
+# ---------------------------------------------------------------------------
+
+
+def _dot_1x(tile: Image.Image, x: int, y: int) -> None:
+    """Draw a 2×2 pixel block at (x, y)."""
+    tile.putpixel((x, y), DOT_COLOR)
+    tile.putpixel((x + 1, y), DOT_COLOR)
+    tile.putpixel((x, y + 1), DOT_COLOR)
+    tile.putpixel((x + 1, y + 1), DOT_COLOR)
+
+
+def _circle_2x(tile: Image.Image, cx: int, cy: int) -> None:
+    """Draw a 7×7 circle centered at (cx, cy) using ellipse."""
+    draw = ImageDraw.Draw(tile)
+    draw.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=DOT_COLOR)
+
+
+def _place_dots_1x(tile: Image.Image, row_y: int, xs: list[int]) -> None:
+    for x in xs:
+        _dot_1x(tile, x, row_y)
+
+
+def _place_dots_2x(tile: Image.Image, row_y: int, xs: list[int]) -> None:
+    for x in xs:
+        _circle_2x(tile, x, row_y)
+
+
+# ---------------------------------------------------------------------------
+# Tile builders
+# ---------------------------------------------------------------------------
+
+
+def make_1x_tile(name: str) -> Image.Image:
+    """16×16 tile: 2 staggered rows of 2×2 dots (rows at y=3 and y=11).
+
+    2×2 block max safe x position is 13 (blocks 13-14), leaving col 15 empty.
+    """
+    tile = Image.new("RGBA", (TILE_SIZE, TILE_SIZE), (0, 0, 0, 0))
 
     if name == "pm-water-dot":
-        for x in (4, 20):
-            _dot(x, 4)
-        for x in (12, 28):
-            _dot(x, 14)
-        for x in (4, 20):
-            _dot(x, 24)
+        _place_dots_1x(tile, 3, [2, 10])
+        _place_dots_1x(tile, 11, [6, 13])
 
     elif name == "pm-green-dot":
-        for x in (4, 20):
-            _dot(x, 4)
-        for x in (12, 28):
-            _dot(x, 10)
-        for x in (4, 20):
-            _dot(x, 18)
-        for x in (12, 28):
-            _dot(x, 24)
+        _place_dots_1x(tile, 3, [2, 6, 10, 13])
+        _place_dots_1x(tile, 11, [4, 8, 12])
 
     elif name == "pm-forest-dot":
-        for x in (4, 18):
-            _dot(x, 4)
-        for x in (10, 24):
-            _dot(x, 11)
-        for x in (4, 18):
-            _dot(x, 18)
-        for x in (10, 24):
-            _dot(x, 25)
+        _place_dots_1x(tile, 3, [2, 8, 13])
+        _place_dots_1x(tile, 11, [5, 11])
 
     elif name == "pm-beach-dot":
-        for x in (4, 20):
-            _dot(x, 6)
-        for x in (12, 28):
-            _dot(x, 20)
+        _place_dots_1x(tile, 3, [4, 12])
+        _place_dots_1x(tile, 11, [4, 12])
+
+    elif name == "pm-wetland-cross":
+        for i in range(-TILE_SIZE, TILE_SIZE * 2, 4):
+            _draw_line_1x(tile, i, 0, i + TILE_SIZE, TILE_SIZE)
+            _draw_line_1x(tile, i + TILE_SIZE, 0, i, TILE_SIZE)
+        _seam_fix_1x(tile)
+
+    elif name == "pm-rock-speckle":
+        _place_dots_1x(tile, 3, [3, 11])
+        _place_dots_1x(tile, 11, [7, 2])
+
+    elif name == "pm-surface-hatch":
+        for i in range(-TILE_SIZE, TILE_SIZE * 2, 3):
+            _draw_line_1x(tile, i, 0, i + TILE_SIZE, TILE_SIZE)
+        _seam_fix_1x(tile)
+
+    return tile
+
+
+def make_2x_tile(name: str) -> Image.Image:
+    """32×32 tile: 2 staggered rows of 7×7 circles (rows at cy=7 and cy=23).
+
+    7×7 circle at max safe x=27 spans 24-30, leaving col 31 empty.
+    Min safe x=4 spans 1-7, leaving col 0 empty.
+    """
+    tile = Image.new("RGBA", (TILE_SIZE_2X, TILE_SIZE_2X), (0, 0, 0, 0))
+
+    if name == "pm-water-dot":
+        _place_dots_2x(tile, 7, [4, 20])
+        _place_dots_2x(tile, 23, [12, 27])
+
+    elif name == "pm-green-dot":
+        _place_dots_2x(tile, 7, [4, 12, 20, 27])
+        _place_dots_2x(tile, 23, [8, 16, 24])
+
+    elif name == "pm-forest-dot":
+        _place_dots_2x(tile, 7, [4, 16, 27])
+        _place_dots_2x(tile, 23, [10, 22])
+
+    elif name == "pm-beach-dot":
+        _place_dots_2x(tile, 7, [8, 24])
+        _place_dots_2x(tile, 23, [8, 24])
 
     elif name == "pm-wetland-cross":
         for i in range(-TILE_SIZE_2X, TILE_SIZE_2X * 2, 6):
             _draw_line_2x(tile, i, 0, i + TILE_SIZE_2X, TILE_SIZE_2X)
             _draw_line_2x(tile, i + TILE_SIZE_2X, 0, i, TILE_SIZE_2X)
+        _seam_fix_2x(tile)
 
     elif name == "pm-rock-speckle":
-        for cx, cy in [(5, 5), (15, 3), (8, 14), (20, 12), (5, 22), (16, 25), (26, 7), (13, 20)]:
-            for dx in (-1, 0, 1):
-                for dy in (-1, 0, 1):
-                    tile.putpixel((cx + dx, cy + dy), DOT_COLOR)
+        _place_dots_2x(tile, 7, [6, 22])
+        _place_dots_2x(tile, 23, [14, 4])
 
     elif name == "pm-surface-hatch":
         for i in range(-TILE_SIZE_2X, TILE_SIZE_2X * 2, 4):
             _draw_line_2x(tile, i, 0, i + TILE_SIZE_2X, TILE_SIZE_2X)
+        _seam_fix_2x(tile)
 
     return tile
 
 
-def _draw_line_2x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None:
-    dx = abs(x1 - x0)
-    dy = abs(y1 - y0)
-    sx = 1 if x0 < x1 else -1
-    sy = 1 if y0 < y1 else -1
-    err = dx - dy
-    x, y = x0, y0
-    while True:
-        if 0 <= x < TILE_SIZE_2X and 0 <= y < TILE_SIZE_2X:
-            tile.putpixel((x, y), LINE_COLOR)
-            if x + 1 < TILE_SIZE_2X:
-                tile.putpixel((x + 1, y), LINE_COLOR)
-            if y + 1 < TILE_SIZE_2X:
-                tile.putpixel((x, y + 1), LINE_COLOR)
-        if x == x1 and y == y1:
-            break
-        e2 = 2 * err
-        if e2 > -dy:
-            err -= dy
-            x += sx
-        if e2 < dx:
-            err += dx
-            y += sy
+# ---------------------------------------------------------------------------
+# Sprite packing
+# ---------------------------------------------------------------------------
 
 
 def pack_sprite_1x() -> tuple[Image.Image, dict[str, dict]]:
@@ -252,6 +284,11 @@ def pack_sprite_2x() -> tuple[Image.Image, dict[str, dict]]:
     return sheet, meta
 
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
 
@@ -267,7 +304,6 @@ def main() -> None:
     (ASSETS / "halftone-sprite@2x.json").write_text(json.dumps(meta2, indent=2) + "\n")
     print(f"  2x sprite: {img2.size}, {len(PATTERNS)} tiles")
 
-    # Quick verification
     for name in PATTERNS:
         m1 = meta1[name]
         m2 = meta2[name]
