@@ -51,7 +51,7 @@
     p { margin: 0; color: var(--muted); }
     .controls {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
       margin-top: 14px;
     }
@@ -160,6 +160,13 @@
           <label for="styleSelect">Style</label>
           <select id="styleSelect"></select>
         </div>
+        <div>
+          <label for="textureSelect">Texture</label>
+          <select id="textureSelect">
+            <option value="flat">Flat color</option>
+            <option value="halftone">Halftone overlays</option>
+          </select>
+        </div>
       </div>
       <div class="button-row">
         <button id="prevBtn" type="button">Previous place</button>
@@ -168,7 +175,7 @@
     </section>
     <section id="cards" class="list" aria-label="Showcase places"></section>
     <section class="footer">
-      Serve this folder over HTTP, then open <code>showcase_viewer.html</code>. Example: <code>python3.11 -m http.server 8080</code>.
+      Serve this folder over HTTP, then open <code>index.html</code>. Use the Texture selector to compare flat and halftone styles. Example: <code>python3.11 -m http.server 8080</code>.
     </section>
   </main>
 
@@ -336,9 +343,44 @@
 
     const placeSelect = document.getElementById('placeSelect');
     const styleSelect = document.getElementById('styleSelect');
+    const textureSelect = document.getElementById('textureSelect');
     const cards = document.getElementById('cards');
     let currentIndex = 0;
     let currentStyle = places[0].style;
+    let currentTexture = 'flat';
+
+    function styleUrl(styleKey) {
+      const flatUrl = styles[styleKey];
+      if (currentTexture === 'halftone') {
+        return flatUrl.replace('outputs/all_presets/', 'outputs/all_presets_halftone/');
+      }
+      return flatUrl;
+    }
+
+    async function styleForMapLibre(styleKey) {
+      const url = styleUrl(styleKey);
+      if (currentTexture !== 'halftone') return url;
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Unable to load style ${url}: ${response.status}`);
+      const style = await response.json();
+      const styleBase = new URL(url, window.location.href);
+
+      if (Array.isArray(style.sprite)) {
+        style.sprite = style.sprite.map((entry) => ({
+          ...entry,
+          url: new URL(entry.url, styleBase).href
+        }));
+      } else if (typeof style.sprite === 'string') {
+        style.sprite = new URL(style.sprite, styleBase).href;
+      }
+      return style;
+    }
+
+    async function applyStyle(styleKey) {
+      const nextStyle = await styleForMapLibre(styleKey);
+      map.setStyle(nextStyle);
+    }
 
     for (const [key] of Object.entries(styles)) {
       const option = document.createElement('option');
@@ -376,7 +418,7 @@
 
     const map = new maplibregl.Map({
       container: 'map',
-      style: styles[places[0].style],
+      style: styleUrl(places[0].style),
       center: places[0].center,
       zoom: places[0].zoom,
       bearing: places[0].bearing,
@@ -397,6 +439,7 @@
       const place = places[currentIndex];
       placeSelect.value = String(currentIndex);
       styleSelect.value = currentStyle;
+      textureSelect.value = currentTexture;
       document.querySelectorAll('.card').forEach((card) => {
         card.classList.toggle('active', Number(card.dataset.index) === currentIndex);
       });
@@ -406,16 +449,23 @@
       marker.setLngLat(place.center);
     }
 
-    function setStyle(styleKey) {
+    async function setStyle(styleKey) {
       if (!styles[styleKey] || styleKey === currentStyle) return;
       currentStyle = styleKey;
-      map.setStyle(styles[styleKey]);
+      await applyStyle(styleKey);
     }
 
-    function goToPlace(index, usePlaceStyle = true) {
+    async function setTexture(textureKey) {
+      if (!['flat', 'halftone'].includes(textureKey) || textureKey === currentTexture) return;
+      currentTexture = textureKey;
+      await applyStyle(currentStyle);
+      syncUI();
+    }
+
+    async function goToPlace(index, usePlaceStyle = true) {
       currentIndex = (index + places.length) % places.length;
       const place = places[currentIndex];
-      if (usePlaceStyle) setStyle(place.style);
+      if (usePlaceStyle) await setStyle(place.style);
       map.flyTo({
         center: place.center,
         zoom: place.zoom,
@@ -428,7 +478,8 @@
     }
 
     placeSelect.addEventListener('change', (event) => goToPlace(Number(event.target.value), true));
-    styleSelect.addEventListener('change', (event) => setStyle(event.target.value));
+    styleSelect.addEventListener('change', (event) => setStyle(event.target.value).catch(console.error));
+    textureSelect.addEventListener('change', (event) => setTexture(event.target.value).catch(console.error));
     document.getElementById('prevBtn').addEventListener('click', () => goToPlace(currentIndex - 1, true));
     document.getElementById('nextBtn').addEventListener('click', () => goToPlace(currentIndex + 1, true));
 

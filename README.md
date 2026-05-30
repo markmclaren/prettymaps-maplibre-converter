@@ -123,3 +123,8 @@ If you want a closer visual match, the best next step is to load a converted sty
 - [`prettymaps`](https://github.com/marceloprates/prettymaps) — prettymaps GitHub repository
 - [OpenFreeMap quick start](https://openfreemap.org/quick_start/) — OpenFreeMap quick start
 - [MapLibre style specification](https://maplibre.org/maplibre-style-spec/) — MapLibre Style Specification
+
+
+## Halftone texture mode
+
+The converter now supports an optional `--texture-mode halftone` flag that adds semi-transparent `fill-pattern` overlays to selected polygon layers. The repository includes a GitHub Pages-compatible sprite at `assets/halftone-sprite.{json,png}` and pre-generated textured styles in `outputs/all_presets_halftone/`. In the showcase viewer, use the **Texture** selector to switch between the original flat-color conversion and the halftone overlay variant.

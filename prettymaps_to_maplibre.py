@@ -19,6 +19,7 @@ from typing import Any, Iterable
 DEFAULT_DOMAIN = "https://tiles.openfreemap.org"
 DEFAULT_PRESET_DIR = Path("/home/ubuntu/prettymaps/prettymaps/presets")
 DEFAULT_BASE_STYLE = Path("/home/ubuntu/openfreemap-styles/styles/positron/style.json")
+DEFAULT_HALFTONE_SPRITE = "assets/halftone-sprite"
 
 COLOR_RE = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 
@@ -367,6 +368,68 @@ def build_polygon_semantic_layers(layer_name: str, layer_style: dict[str, Any], 
     return output
 
 
+def halftone_pattern_for_layer(layer_id: str) -> str | None:
+    """Return a local sprite pattern for a generated prettymaps fill layer."""
+    lid = layer_id.lower()
+    if not lid.startswith("pm-") or lid.endswith("-outline") or lid.endswith("-halftone"):
+        return None
+    if any(token in lid for token in ["water", "sea"]):
+        return "halftone:pm-water-dot"
+    if any(token in lid for token in ["forest", "wood"]):
+        return "halftone:pm-forest-dot"
+    if any(token in lid for token in ["green", "park", "garden", "grass"]):
+        return "halftone:pm-green-dot"
+    if any(token in lid for token in ["beach", "sand"]):
+        return "halftone:pm-beach-dot"
+    if "wetland" in lid:
+        return "halftone:pm-wetland-cross"
+    if "rock" in lid:
+        return "halftone:pm-rock-speckle"
+    if any(token in lid for token in ["parking", "pedestrian", "school", "building"]):
+        return "halftone:pm-surface-hatch"
+    return None
+
+
+def add_halftone_overlays(style_obj: dict[str, Any], sprite_url: str, ctx: ConversionContext) -> None:
+    """Add semi-transparent pattern overlays above eligible fill layers."""
+    existing_sprite = style_obj.get("sprite")
+    if isinstance(existing_sprite, str):
+        style_obj["sprite"] = [
+            {"id": "default", "url": existing_sprite},
+            {"id": "halftone", "url": sprite_url},
+        ]
+    elif isinstance(existing_sprite, list):
+        if not any(item.get("id") == "halftone" for item in existing_sprite if isinstance(item, dict)):
+            existing_sprite.append({"id": "halftone", "url": sprite_url})
+    else:
+        style_obj["sprite"] = [{"id": "halftone", "url": sprite_url}]
+
+    textured_layers: list[dict[str, Any]] = []
+    overlay_count = 0
+    for layer in style_obj.get("layers", []):
+        textured_layers.append(layer)
+        if layer.get("type") != "fill":
+            continue
+        pattern = halftone_pattern_for_layer(str(layer.get("id", "")))
+        if not pattern:
+            continue
+        overlay = deepcopy(layer)
+        overlay["id"] = f"{layer['id']}-halftone"
+        overlay["paint"] = {
+            "fill-pattern": pattern,
+            "fill-opacity": 0.72,
+            "fill-antialias": True,
+        }
+        overlay["metadata"] = {"prettymaps:halftone_overlay": True}
+        textured_layers.append(overlay)
+        overlay_count += 1
+    style_obj["layers"] = textured_layers
+    style_obj["metadata"]["texture_mode"] = "halftone"
+    style_obj["metadata"]["halftone_sprite"] = sprite_url
+    style_obj["metadata"]["halftone_overlay_count"] = overlay_count
+    ctx.warn(f"Halftone texture mode added {overlay_count} semi-transparent pattern overlay layer(s).")
+
+
 def build_background_layer(style: dict[str, Any], ctx: ConversionContext) -> dict[str, Any]:
     return {
         "id": "background",
@@ -448,6 +511,9 @@ def build_style(preset: dict[str, Any], preset_path: Path, args: argparse.Namesp
         else:
             style_obj["layers"].extend(build_polygon_semantic_layers(layer_name, layer_style, ctx))
 
+    if args.texture_mode == "halftone":
+        add_halftone_overlays(style_obj, args.halftone_sprite, ctx)
+
     if args.include_labels:
         if base_style is None:
             base_path = DEFAULT_BASE_STYLE
@@ -473,6 +539,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--include-labels", action="store_true", help="Append symbol label layers from an OpenFreeMap base style.")
     parser.add_argument("--base-style", default=str(DEFAULT_BASE_STYLE), help="Path to an OpenFreeMap base style JSON used for label reuse and optional sources.")
     parser.add_argument("--reuse-base-sources", action="store_true", help="Reuse sources/sprite/glyphs from --base-style after replacing OpenFreeMap placeholders.")
+    parser.add_argument("--texture-mode", choices=["none", "halftone"], default="none", help="Optionally add prettymaps-like pattern overlays to polygon fill layers.")
+    parser.add_argument("--halftone-sprite", default=DEFAULT_HALFTONE_SPRITE, help="Sprite URL prefix for halftone patterns, without .json/.png suffix.")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print output JSON.")
     return parser.parse_args(argv)
 
