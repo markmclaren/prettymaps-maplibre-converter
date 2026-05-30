@@ -238,7 +238,7 @@ const textureSelect = document.getElementById('textureSelect');
 const cards = document.getElementById('cards');
 let currentIndex = 0;
 let currentStyle = places[0].style;
-let currentTexture = 'flat';
+let currentTexture = 'halftone';
 
 function styleUrl(styleKey) {
   if (currentTexture === 'halftone') {
