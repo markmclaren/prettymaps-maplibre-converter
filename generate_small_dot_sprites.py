@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Regenerate halftone sprite sheets — 2 staggered rows of circles, tiling seamlessly.
+"""Regenerate halftone sprite sheets — 2 staggered rows of dots, tiling seamlessly.
 
 Produces assets/halftone-sprite.png and assets/halftone-sprite@2x.png
 with corresponding JSON metadata files.
 
 Layout: exactly 2 staggered rows of dots per tile (classic halftone pattern).
 
-Dot shape:
-  1x tiles (16×16): 2×2 pixel blocks — small filled dots that read as circles
-  2x tiles (32×32): 7×7 circles via PIL ImageDraw.ellipse
+Dot sizes (dense halftone matching prettymaps reference):
+  1x tiles (8×8):  1×1 pixel dots
+  2x tiles (16×16): 2×2 pixel blocks
 
 All dots positioned so dot extent never touches tile edge — both left/right
 edges are empty (matching), and both top/bottom edges are empty (matching).
@@ -23,8 +23,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ASSETS = Path("assets")
-TILE_SIZE = 16
-TILE_SIZE_2X = TILE_SIZE * 2
+TILE_SIZE = 8
+TILE_SIZE_2X = TILE_SIZE * 2  # 16
 
 PATTERNS: list[str] = [
     "pm-water-dot",
@@ -77,7 +77,6 @@ def _draw_line_1x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None
     while True:
         wx, wy = x % w, y % w
         tile.putpixel((wx, wy), LINE_COLOR)
-        tile.putpixel(((wx + 1) % w, wy), LINE_COLOR)
         if x == x1 and y == y1:
             break
         e2 = 2 * err
@@ -116,30 +115,25 @@ def _draw_line_2x(tile: Image.Image, x0: int, y0: int, x1: int, y1: int) -> None
 # ---------------------------------------------------------------------------
 # Dot drawing / placement
 #
-# 1x: 2×2 block at (x,y) occupies x..x+1, y..y+1.
-#     For seamless tiling: max safe x=13 (blocks 13-14), max safe y=13.
-#     Rows at y=3 (spans 3-4) and y=11 (spans 11-12). Safe.
+# 1x: 1×1 pixel dot at (x, y).
+#     8×8 tile: rows at y=2 and y=6. Dots placed to avoid tile edges.
 #
-# 2x: 7×7 circle at (cx,cy) occupies cx-3..cx+3, cy-3..cy+3.
-#     For seamless tiling: min cx=4 (hits 1), max cx=28 (hits 31)?
-#     Actually cx+3=31 → touches column 31, which is edge = bad.
-#     Max safe cx=27 (25-30), min safe cx=4 (1-7).
-#     Rows at cy=7 (spans 4-10) and cy=23 (spans 20-26). Safe.
+# 2x: 2×2 pixel block at (x, y) occupies x..x+1, y..y+1.
+#     16×16 tile: rows at y=3 and y=11. Max safe x=14 (block 14-15).
 # ---------------------------------------------------------------------------
 
 
 def _dot_1x(tile: Image.Image, x: int, y: int) -> None:
+    """Draw a 1×1 pixel dot at (x, y)."""
+    tile.putpixel((x, y), DOT_COLOR)
+
+
+def _dot_2x(tile: Image.Image, x: int, y: int) -> None:
     """Draw a 2×2 pixel block at (x, y)."""
     tile.putpixel((x, y), DOT_COLOR)
     tile.putpixel((x + 1, y), DOT_COLOR)
     tile.putpixel((x, y + 1), DOT_COLOR)
     tile.putpixel((x + 1, y + 1), DOT_COLOR)
-
-
-def _circle_2x(tile: Image.Image, cx: int, cy: int) -> None:
-    """Draw a 7×7 circle centered at (cx, cy) using ellipse."""
-    draw = ImageDraw.Draw(tile)
-    draw.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=DOT_COLOR)
 
 
 def _place_dots_1x(tile: Image.Image, row_y: int, xs: list[int]) -> None:
@@ -149,36 +143,37 @@ def _place_dots_1x(tile: Image.Image, row_y: int, xs: list[int]) -> None:
 
 def _place_dots_2x(tile: Image.Image, row_y: int, xs: list[int]) -> None:
     for x in xs:
-        _circle_2x(tile, x, row_y)
+        _dot_2x(tile, x, row_y)
 
 
 # ---------------------------------------------------------------------------
-# Tile builders
+# Tile builders — 1x (8×8 tiles with 1×1 dots)
 # ---------------------------------------------------------------------------
 
 
 def make_1x_tile(name: str) -> Image.Image:
-    """16×16 tile: 2 staggered rows of 2×2 dots (rows at y=3 and y=11).
-
-    2×2 block max safe x position is 13 (blocks 13-14), leaving col 15 empty.
-    """
+    """8×8 tile: 2 staggered rows of 1×1 dots (rows at y=2 and y=6)."""
     tile = Image.new("RGBA", (TILE_SIZE, TILE_SIZE), (0, 0, 0, 0))
 
     if name == "pm-water-dot":
-        _place_dots_1x(tile, 3, [2, 10])
-        _place_dots_1x(tile, 11, [6, 13])
+        # Sparse: 4 dots/tile, ~5.7px spacing
+        _place_dots_1x(tile, 2, [1, 5])
+        _place_dots_1x(tile, 6, [3, 7])
 
     elif name == "pm-green-dot":
-        _place_dots_1x(tile, 3, [2, 6, 10, 13])
-        _place_dots_1x(tile, 11, [4, 8, 12])
+        # Dense: 7 dots/tile, ~3px spacing (staggered)
+        _place_dots_1x(tile, 2, [0, 3, 6])
+        _place_dots_1x(tile, 6, [1, 4, 7])
 
     elif name == "pm-forest-dot":
-        _place_dots_1x(tile, 3, [2, 8, 13])
-        _place_dots_1x(tile, 11, [5, 11])
+        # Medium: 5 dots/tile, ~4px spacing
+        _place_dots_1x(tile, 2, [0, 4, 7])
+        _place_dots_1x(tile, 6, [2, 6])
 
     elif name == "pm-beach-dot":
-        _place_dots_1x(tile, 3, [4, 12])
-        _place_dots_1x(tile, 11, [4, 12])
+        # Sparse regular: 4 dots/tile
+        _place_dots_1x(tile, 2, [0, 4])
+        _place_dots_1x(tile, 6, [0, 4])
 
     elif name == "pm-wetland-cross":
         for i in range(-TILE_SIZE, TILE_SIZE * 2, 4):
@@ -187,8 +182,9 @@ def make_1x_tile(name: str) -> Image.Image:
         _seam_fix_1x(tile)
 
     elif name == "pm-rock-speckle":
-        _place_dots_1x(tile, 3, [3, 11])
-        _place_dots_1x(tile, 11, [7, 2])
+        # Sparse staggered: 4 dots/tile
+        _place_dots_1x(tile, 2, [2, 6])
+        _place_dots_1x(tile, 6, [0, 4])
 
     elif name == "pm-surface-hatch":
         for i in range(-TILE_SIZE, TILE_SIZE * 2, 3):
@@ -198,29 +194,30 @@ def make_1x_tile(name: str) -> Image.Image:
     return tile
 
 
-def make_2x_tile(name: str) -> Image.Image:
-    """32×32 tile: 2 staggered rows of 7×7 circles (rows at cy=7 and cy=23).
+# ---------------------------------------------------------------------------
+# Tile builders — 2x (16×16 tiles with 2×2 dot blocks)
+# ---------------------------------------------------------------------------
 
-    7×7 circle at max safe x=27 spans 24-30, leaving col 31 empty.
-    Min safe x=4 spans 1-7, leaving col 0 empty.
-    """
+
+def make_2x_tile(name: str) -> Image.Image:
+    """16×16 tile: 2 staggered rows of 2×2 dot blocks (rows at y=3 and y=11)."""
     tile = Image.new("RGBA", (TILE_SIZE_2X, TILE_SIZE_2X), (0, 0, 0, 0))
 
     if name == "pm-water-dot":
-        _place_dots_2x(tile, 7, [4, 20])
-        _place_dots_2x(tile, 23, [12, 27])
+        _place_dots_2x(tile, 3, [2, 10])
+        _place_dots_2x(tile, 11, [6, 14])
 
     elif name == "pm-green-dot":
-        _place_dots_2x(tile, 7, [4, 12, 20, 27])
-        _place_dots_2x(tile, 23, [8, 16, 24])
+        _place_dots_2x(tile, 3, [0, 6, 12])
+        _place_dots_2x(tile, 11, [3, 9, 14])
 
     elif name == "pm-forest-dot":
-        _place_dots_2x(tile, 7, [4, 16, 27])
-        _place_dots_2x(tile, 23, [10, 22])
+        _place_dots_2x(tile, 3, [0, 8, 14])
+        _place_dots_2x(tile, 11, [4, 12])
 
     elif name == "pm-beach-dot":
-        _place_dots_2x(tile, 7, [8, 24])
-        _place_dots_2x(tile, 23, [8, 24])
+        _place_dots_2x(tile, 3, [0, 8])
+        _place_dots_2x(tile, 11, [0, 8])
 
     elif name == "pm-wetland-cross":
         for i in range(-TILE_SIZE_2X, TILE_SIZE_2X * 2, 6):
@@ -229,8 +226,8 @@ def make_2x_tile(name: str) -> Image.Image:
         _seam_fix_2x(tile)
 
     elif name == "pm-rock-speckle":
-        _place_dots_2x(tile, 7, [6, 22])
-        _place_dots_2x(tile, 23, [14, 4])
+        _place_dots_2x(tile, 3, [4, 12])
+        _place_dots_2x(tile, 11, [0, 8])
 
     elif name == "pm-surface-hatch":
         for i in range(-TILE_SIZE_2X, TILE_SIZE_2X * 2, 4):

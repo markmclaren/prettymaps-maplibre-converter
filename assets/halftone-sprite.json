@@ -1,50 +1,50 @@
 {
   "pm-water-dot": {
-    "width": 16,
-    "height": 16,
+    "width": 8,
+    "height": 8,
     "x": 0,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-green-dot": {
-    "width": 16,
-    "height": 16,
-    "x": 16,
+    "width": 8,
+    "height": 8,
+    "x": 8,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-forest-dot": {
-    "width": 16,
-    "height": 16,
-    "x": 32,
+    "width": 8,
+    "height": 8,
+    "x": 16,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-beach-dot": {
-    "width": 16,
-    "height": 16,
-    "x": 48,
+    "width": 8,
+    "height": 8,
+    "x": 24,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-wetland-cross": {
-    "width": 16,
-    "height": 16,
-    "x": 64,
+    "width": 8,
+    "height": 8,
+    "x": 32,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-rock-speckle": {
-    "width": 16,
-    "height": 16,
-    "x": 80,
+    "width": 8,
+    "height": 8,
+    "x": 40,
     "y": 0,
     "pixelRatio": 1
   },
   "pm-surface-hatch": {
-    "width": 16,
-    "height": 16,
-    "x": 96,
+    "width": 8,
+    "height": 8,
+    "x": 48,
     "y": 0,
     "pixelRatio": 1
   }
