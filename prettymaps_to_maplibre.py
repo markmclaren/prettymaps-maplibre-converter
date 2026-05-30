@@ -417,7 +417,7 @@ def add_halftone_overlays(style_obj: dict[str, Any], sprite_url: str, ctx: Conve
         overlay["id"] = f"{layer['id']}-halftone"
         overlay["paint"] = {
             "fill-pattern": pattern,
-            "fill-opacity": 0.72,
+            "fill-opacity": 0.50,
             "fill-antialias": True,
         }
         overlay["metadata"] = {"prettymaps:halftone_overlay": True}

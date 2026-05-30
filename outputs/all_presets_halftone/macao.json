@@ -120,7 +120,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-forest-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -211,7 +211,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -317,7 +317,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -438,7 +438,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-forest-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -551,7 +551,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-water-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -660,7 +660,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -777,7 +777,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-green-dot",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "metadata": {
@@ -1022,7 +1022,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-surface-hatch",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "minzoom": 12,

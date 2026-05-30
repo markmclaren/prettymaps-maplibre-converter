@@ -222,7 +222,7 @@
       ],
       "paint": {
         "fill-pattern": "pm-surface-hatch",
-        "fill-opacity": 0.72,
+        "fill-opacity": 0.5,
         "fill-antialias": true
       },
       "minzoom": 12,
