@@ -181,6 +181,54 @@ const places = [
     pitch: 0,
     style: 'ukiyoe',
     note: 'A standalone washi-paper, Prussian-blue, indigo, and vermilion MapLibre style with wave and hatch sprite textures; shown at the Japan Ukiyo-e Museum.'
+  },
+  {
+    id: 'harekaer',
+    name: 'Haveforeningen Harekær',
+    location: 'Copenhagen, Denmark',
+    source: "prettymaps.plot('Haveforeningen Harekær, Copenhagen')",
+    center: [12.3982, 55.6365],
+    zoom: 16.0,
+    bearing: 0,
+    pitch: 0,
+    style: 'default',
+    note: 'A garden allotment community in the southern suburbs of Copenhagen.'
+  },
+  {
+    id: 'palmanova',
+    name: 'Palmanova',
+    location: 'Province of Udine, Italy',
+    source: "prettymaps.plot('Palmanova, Italy')",
+    center: [13.3101, 45.9068],
+    zoom: 14.8,
+    bearing: 0,
+    pitch: 0,
+    style: 'default',
+    note: 'A Renaissance star-fort city in Friuli Venezia Giulia, Italy, with a distinctive nine-sided polygonal layout.'
+  },
+  {
+    id: 'bourtange',
+    name: 'Bourtange Fortress Museum',
+    location: 'Groningen, Netherlands',
+    source: "prettymaps.plot('Bourtange, Netherlands')",
+    center: [7.1897, 53.0086],
+    zoom: 15.5,
+    bearing: 0,
+    pitch: 0,
+    style: 'default',
+    note: 'A restored Dutch star fort and village in Groningen, originally built during the Eighty Years\u2019 War.'
+  },
+  {
+    id: 'palm-jebel-ali',
+    name: 'Palm Jebel Ali',
+    location: 'Dubai, United Arab Emirates',
+    source: "prettymaps.plot('Palm Jebel Ali, Dubai')",
+    center: [54.9870, 25.0134],
+    zoom: 12.5,
+    bearing: 0,
+    pitch: 0,
+    style: 'default',
+    note: 'A massive palm-shaped artificial archipelago under development in Dubai, south of the original Palm Jumeirah.'
   }
 ];
 
