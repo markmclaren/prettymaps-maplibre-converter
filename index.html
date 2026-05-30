@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>prettymaps → OpenFreeMap MapLibre style viewer</title>
+  <link href="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    .panel {
+      position: absolute;
+      z-index: 2;
+      top: 12px;
+      left: 12px;
+      width: 340px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.92);
+      font: 14px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.16);
+    }
+    code { font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="panel">
+    <strong>Converted prettymaps style</strong><br />
+    Choose a style below. Serve this directory over HTTP, for example:<br />
+    <code>python3.11 -m http.server 8080</code>
+    <div style="margin-top: 0.75rem;">
+      <label for="style-select"><strong>Style:</strong></label>
+      <select id="style-select" style="width: 100%; margin-top: 0.4rem;"></select>
+    </div>
+  </div>
+  <script src="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.js"></script>
+  <script>
+    const styles = [
+      { label: 'default-openfreemap', url: 'outputs/default-openfreemap.json' },
+      { label: 'all_presets/default', url: 'outputs/all_presets/default.json' },
+      { label: 'all_presets/abraca-redencao', url: 'outputs/all_presets/abraca-redencao.json' },
+      { label: 'all_presets/barcelona', url: 'outputs/all_presets/barcelona.json' },
+      { label: 'all_presets/barcelona-plotter', url: 'outputs/all_presets/barcelona-plotter.json' },
+      { label: 'all_presets/cb-bf-f', url: 'outputs/all_presets/cb-bf-f.json' },
+      { label: 'all_presets/heerhugowaard', url: 'outputs/all_presets/heerhugowaard.json' },
+      { label: 'all_presets/macao', url: 'outputs/all_presets/macao.json' },
+      { label: 'all_presets/minimal', url: 'outputs/all_presets/minimal.json' },
+      { label: 'all_presets/plotter', url: 'outputs/all_presets/plotter.json' },
+      { label: 'all_presets/tijuca', url: 'outputs/all_presets/tijuca.json' }
+    ];
+
+    const styleSelect = document.getElementById('style-select');
+    styles.forEach((style) => {
+      const option = document.createElement('option');
+      option.value = style.url;
+      option.textContent = style.label;
+      if (style.url === 'outputs/all_presets/default.json') {
+        option.selected = true;
+      }
+      styleSelect.appendChild(option);
+    });
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: styleSelect.value,
+      center: [2.1734, 41.3851],
+      zoom: 13,
+      hash: true
+    });
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+    styleSelect.addEventListener('change', () => {
+      map.setStyle(styleSelect.value);
+    });
+  </script>
+</body>
+</html>

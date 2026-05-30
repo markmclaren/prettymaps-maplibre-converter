@@ -1,0 +1,5 @@
+{
+	"devDependencies": {
+		"@maplibre/maplibre-gl-style-spec": "^24.8.5"
+	}
+}
